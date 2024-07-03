@@ -2,26 +2,27 @@
 export default {
   data() {
     return {
-      startTime: null,
-      endTime: null,
       maxScrollPercent: 0,
+
+      openTime: null,
+      startTime: null,
+      accumulatedTime: 0,
     };
   },
+  created() {
+    this.openTime = new Date();
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    this.startTimer();
+  },
   mounted() {
-    this.startTime = new Date();
-    window.addEventListener('scroll', this.handleScroll);
+    document.addEventListener('scroll', this.handleScroll);
   },
   beforeDestroy() {
-    this.endTime = new Date();
-
-    const timeSpent = this.endTime - this.startTime;
-
-    const secondsSpent = Math.floor(timeSpent / 1000);
-
-    window.removeEventListener('scroll', this.handleScroll);
-
-    this.sendTimeSpent(secondsSpent, this.maxScrollPercent);
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    this.stopTimer();
+    this.send(this.accumulatedTime, this.maxScrollPercent);
   },
+
 
   methods: {
     handleScroll() {
@@ -33,13 +34,36 @@ export default {
         this.maxScrollPercent = scrollPercent;
       }
     },
-    sendTimeSpent(seconds, maxScrollPercent) {
+
+    startTimer() {
+      console.log('startTimer');
+      this.startTime = Date.now();
+    },
+    stopTimer() {
+      console.log('stopTimer');
+        if (this.startTime) {
+          this.accumulatedTime += Date.now() - this.startTime;
+          this.startTime = null;
+        }
+    },
+    handleVisibilityChange() {
+      if (document.hidden) {
+        this.stopTimer();
+      } else {
+        this.startTimer();
+      }
+    },
+
+
+    send(seconds, maxScrollPercent) {
+      const send_seconds = Math.floor(seconds / 1000);
+
       fetch('/backend/pixel.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ time_live: seconds, scroll: maxScrollPercent }),
+        body: JSON.stringify({ time_live: send_seconds, scroll: maxScrollPercent }),
       }).then(response => response.json()).then(data => {
 
         console.log(data);
@@ -48,21 +72,18 @@ export default {
         console.error('Ошибка отправки:', error);
       });
     },
+
     manualBeforeDestroy() {
-      this.endTime = new Date();
-
-      const timeSpent = this.endTime - this.startTime;
-
-      const secondsSpent = Math.floor(timeSpent / 1000);
-
-      this.sendTimeSpent(secondsSpent, this.maxScrollPercent);
-    }
+      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+      this.stopTimer();
+      this.send(this.accumulatedTime, this.maxScrollPercent);
+    },
   },
 }
 </script>
 
 <template>
-  <h2 style="margin-top: 10%">{{ this.startTime }}</h2>
+  <h2 style="margin-top: 10%">{{ this.openTime }}</h2>
   <button @click="manualBeforeDestroy">Покинуть сайт (имитация)</button>
 
   <h1>Максимальный процент скролла: {{ maxScrollPercent }}%</h1>
