@@ -6,7 +6,8 @@ use App\Controllers\MainController;
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 $controller = new MainController();
-if ($uri === '/' || $uri === '' || $uri === '/index.php' ) {
+
+if ($uri === '/' || $uri === '' || $uri === '/index.php' || $uri === '/user') {
     echo $controller->frontend();
 } else if (str_starts_with($uri, '/backend')) {
     echo $controller->backend();

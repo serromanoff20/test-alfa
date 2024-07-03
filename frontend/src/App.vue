@@ -1,10 +1,10 @@
 <script setup>
-  import TimeLiveScroll from './components/TimeLiveScroll.vue'
+  import Menu from "./components/Menu.vue";
 
   ((doc, wind) => {
 
     const n = doc.getElementsByTagName("script")[0],
-          s = doc.createElement("script");
+        s = doc.createElement("script");
 
     s.type = "text/javascript";
     s.async = true;
@@ -12,9 +12,8 @@
     n.parentNode.insertBefore(s, n);
 
   })(document, window);
-
 </script>
 
 <template>
-  <TimeLiveScroll />
+  <Menu />
 </template>

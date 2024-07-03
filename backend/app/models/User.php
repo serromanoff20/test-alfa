@@ -66,7 +66,9 @@ class User extends TestAlfa
         } elseif ($detect->isEdge()) {
             $browser = 'Edge';
         } else {
-            $browser = 'Unknown';
+            $date_of_browser = explode(";", $_SERVER['HTTP_SEC_CH_UA']);
+            $date_of_browser = explode(", ", $date_of_browser[2]);
+            $browser = str_replace("\"", "", $date_of_browser[1]);
         }
 
         $this->browser = $browser;
@@ -100,10 +102,16 @@ class User extends TestAlfa
 
             return 0;
         } else {
-            if ($this->update($user_id)) {
+            if (empty($this->site) && $this->scroll === 0.00 && empty($this->time_live)) {
                 $this->getOne($user_id);
 
                 return $user_id;
+            } else {
+                if ($this->update($user_id)) {
+                    $this->getOne($user_id);
+
+                    return $user_id;
+                }
             }
 
             return 0;
