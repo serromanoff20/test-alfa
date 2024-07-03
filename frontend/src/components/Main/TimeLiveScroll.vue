@@ -55,8 +55,6 @@ export default {
 
       const secondsSpent = Math.floor(timeSpent / 1000);
 
-      window.removeEventListener('scroll', this.handleScroll);
-
       this.sendTimeSpent(secondsSpent, this.maxScrollPercent);
     }
   },
@@ -64,9 +62,10 @@ export default {
 </script>
 
 <template>
-<!--  <h2>{{ this.startTime }}</h2>-->
-<!--  <button @click="manualBeforeDestroy">Покинуть сайт (имитация)</button>-->
+  <h2 style="margin-top: 10%">{{ this.startTime }}</h2>
+  <button @click="manualBeforeDestroy">Покинуть сайт (имитация)</button>
 
-<!--  <h1>Максимальный процент скролла: {{ maxScrollPercent }}%</h1>-->
-<!--  <div style="height: 2000px;"></div>-->
+  <h1>Максимальный процент скролла: {{ maxScrollPercent }}%</h1>
+  <div style="height: 2000px;"></div>
 </template>
+

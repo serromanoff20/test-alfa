@@ -4,8 +4,7 @@ require_once "../backend/app/controllers/Controller.php";
 require_once "../backend/app/models/User.php";
 require_once "../backend/common/models/response/Response.php";
 
-use app\common\models\ModelApp;
-use app\controllers\Controller;
+use app\common\models\ErrorModel;
 use app\models\User;
 use app\common\response\Response;
 use Exception;
@@ -67,7 +66,6 @@ class ResponseController extends Controller
 
                 $result = [
                     "model" => $model,
-                    "params" => $params,
                     "message" => "Данные успешно обновлены"
                 ];
 
